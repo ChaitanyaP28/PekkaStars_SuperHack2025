@@ -1,0 +1,10 @@
+knowledge_base.json
+log.txt
+.idea/
+__pycache__/
+_orchestrator_log.txt
+_orchestrator_wrapper.py
+_ws_server_log.txt
+_ws_server_temp.py
+requirements.txt
+requirements.txt.bkp

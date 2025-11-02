@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Control Panel</title>
+    <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="logo">
+                <h2><span class="logo-icon">🛡️</span><span class="logo-text">Admin Panel</span></h2>
+            </div>
+            <nav class="nav-menu">
+                <a href="#" class="nav-item active" data-page="dashboard">
+                    <span class="icon">📊</span>
+                    <span>Dashboard</span>
+                </a>
+                <a href="#" class="nav-item" data-page="scripts">
+                    <span class="icon">⚙️</span>
+                    <span>Script Manager</span>
+                </a>
+                <a href="#" class="nav-item" data-page="logs">
+                    <span class="icon">📝</span>
+                    <span>System Logs</span>
+                </a>
+                <a href="#" class="nav-item" data-page="upgrade-checker">
+                    <span class="icon">🔄</span>
+                    <span>Upgrade Checker</span>
+                </a>
+                <a href="#" class="nav-item" data-page="faqs">
+                    <span class="icon">❓</span>
+                    <span>FAQs</span>
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Dashboard Page -->
+            <div id="dashboard-page" class="page active">
+                <header class="page-header">
+                    <h1>System Terminals Monitor</h1>
+                    <p class="subtitle">Real-time terminal output from running services</p>
+                </header>
+
+                <!-- Health Status Cards -->
+                <div class="health-cards-grid">
+                    <div class="health-card" id="health-card-1">
+                        <div class="health-icon">📱</div>
+                        <div class="health-info">
+                            <h3>1.py</h3>
+                            <span class="health-status" id="status-1">Checking...</span>
+                        </div>
+                        <div class="health-indicator" id="indicator-1"></div>
+                    </div>
+                    
+                    <div class="health-card" id="health-card-2">
+                        <div class="health-icon">📱</div>
+                        <div class="health-info">
+                            <h3>2.py</h3>
+                            <span class="health-status" id="status-2">Checking...</span>
+                        </div>
+                        <div class="health-indicator" id="indicator-2"></div>
+                    </div>
+                    
+                    <div class="health-card" id="health-card-3">
+                        <div class="health-icon">📱</div>
+                        <div class="health-info">
+                            <h3>3.py</h3>
+                            <span class="health-status" id="status-3">Checking...</span>
+                        </div>
+                        <div class="health-indicator" id="indicator-3"></div>
+                    </div>
+                </div>
+
+                <div class="terminals-grid">
+                    <!-- WebSocket Server Terminal -->
+                    <div class="terminal-section">
+                        <div class="terminal-header">
+                            <h3>🔌 WebSocket Server</h3>
+                            <div class="terminal-actions">
+                                <button class="btn btn-sm btn-primary" onclick="refreshWSLogs()">
+                                    <span>🔄</span>
+                                </button>
+                                <button class="btn btn-sm btn-danger" onclick="clearWSLogs()">
+                                    <span>🗑️</span>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="logs-viewer terminal-viewer" id="ws-terminal-viewer">
+                            <pre id="ws-terminal-content">Loading WebSocket server output...</pre>
+                        </div>
+                    </div>
+
+                    <!-- Orchestrator Terminal -->
+                    <div class="terminal-section">
+                        <div class="terminal-header">
+                            <h3>⚙️ Orchestrator</h3>
+                            <div class="terminal-actions">
+                                <button class="btn btn-sm btn-primary" onclick="refreshOrchestratorLogs()">
+                                    <span>🔄</span>
+                                </button>
+                                <button class="btn btn-sm btn-danger" onclick="clearOrchestratorLogs()">
+                                    <span>🗑️</span>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="logs-viewer terminal-viewer" id="orchestrator-terminal-viewer">
+                            <pre id="orchestrator-terminal-content">Loading orchestrator output...</pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Script Manager Page -->
+            <div id="scripts-page" class="page">
+                <header class="page-header">
+                    <h1>Script Manager</h1>
+                    <p class="subtitle">Execute and manage Python scripts</p>
+                </header>
+
+                <div class="scripts-container">
+                    <div class="scripts-grid" id="scripts-grid">
+                        <!-- Script cards will be dynamically loaded here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Logs Page -->
+            <div id="logs-page" class="page">
+                <header class="page-header">
+                    <h1>System Logs</h1>
+                    <div class="logs-actions">
+                        <button class="btn btn-primary" onclick="refreshLogs()">
+                            <span>🔄</span> Refresh
+                        </button>
+                        <button class="btn btn-danger" onclick="clearLogs()">
+                            <span>🗑️</span> Clear Logs
+                        </button>
+                    </div>
+                </header>
+
+                <div class="logs-container">
+                    <div class="logs-viewer" id="logs-viewer">
+                        <pre id="logs-content">Loading logs...</pre>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Upgrade Checker Page -->
+            <div id="upgrade-checker-page" class="page">
+                <header class="page-header">
+                    <h1>Package Upgrade Checker</h1>
+                    <p class="subtitle">Check for available updates for installed Python packages</p>
+                </header>
+
+                <div class="upgrade-checker-container">
+                    <div class="checker-card">
+                        <div class="checker-info">
+                            <h3>🔍 Scan Python Packages</h3>
+                            <p>This tool will scan all installed Python packages and check PyPI for available updates. The results will be displayed in a new terminal window.</p>
+                        </div>
+                        <div class="checker-actions">
+                            <button class="btn btn-primary btn-large" onclick="runUpgradeChecker()">
+                                <span>🚀</span> Run Upgrade Checker
+                            </button>
+                        </div>
+                        <div class="checker-features">
+                            <div class="feature-item">
+                                <span class="feature-icon">✅</span>
+                                <span>Checks all installed packages</span>
+                            </div>
+                            <div class="feature-item">
+                                <span class="feature-icon">📊</span>
+                                <span>Compares with latest PyPI versions</span>
+                            </div>
+                            <div class="feature-item">
+                                <span class="feature-icon">⚡</span>
+                                <span>Fast and efficient scanning</span>
+                            </div>
+                            <div class="feature-item">
+                                <span class="feature-icon">🖥️</span>
+                                <span>Opens in separate terminal window</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- FAQs Page -->
+            <div id="faqs-page" class="page">
+                <header class="page-header">
+                    <h1>Frequently Asked Questions</h1>
+                    <p class="subtitle">Find answers to common questions about the admin panel</p>
+                </header>
+
+                <div class="faqs-container">
+                    <div class="accordion" id="faqs-accordion">
+                        <!-- FAQs will be dynamically loaded here -->
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="/static/script.js"></script>
+</body>
+</html>
